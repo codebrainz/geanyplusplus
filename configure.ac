@@ -11,6 +11,13 @@ AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 AX_CHECK_GEANY([1.28],
 	[PKG_CHECK_MODULES([GTKMM], [gtkmm-3.0])],
 	[PKG_CHECK_MODULES([GTKMM], [gtkmm-2.4])])
+AC_PATH_PROG([DOXYGEN], [doxygen], [no])
+AM_CONDITIONAL([HAVE_DOXYGEN], [test "x$DOXYGEN" != "xno"])
 AC_CONFIG_HEADERS([geany++/config.h])
-AC_CONFIG_FILES([Makefile geany++/Makefile])
+AC_CONFIG_FILES([
+	Makefile
+	geany++/Makefile
+	doc/Makefile
+	doc/Doxyfile
+])
 AC_OUTPUT
