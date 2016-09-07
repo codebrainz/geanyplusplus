@@ -1,0 +1,184 @@
+#pragma once
+
+#include <geany++/common.hpp>
+#include <cstdint>
+#include <string>
+
+// Undefine these to avoid macro pollution, redefined as proper
+// member variable constants in the Scintilla class
+/*@@constant_undefs@@*/
+
+namespace Geany
+{
+
+/*@@enums@@*/
+
+	class Scintilla
+	{
+	public:
+
+/*@@constant_decls@@*/
+
+		typedef sigc::signal<bool, const SCNotification&> NotificationSignal;
+
+		struct Color
+		{
+			uint8_t red;
+			uint8_t green;
+			uint8_t blue;
+
+			uint32_t to_int() const
+			{
+				return (uint32_t(red) |
+					(uint32_t(green) << 8) | (uint32_t(blue) << 16));
+			}
+
+			static Color white()
+			{
+				return Color{ 255, 255, 255 };
+			}
+
+			static Color black()
+			{
+				return Color{ 0, 0, 0 };
+			}
+
+			static Color from_int(uint32_t color)
+			{
+				return Color{
+					uint8_t(color),
+					uint8_t(color >> 8),
+					uint8_t(color >> 16)
+				};
+			}
+		};
+
+		struct KeyMod
+		{
+			uint16_t key;
+			uint16_t modifier;
+
+			uint32_t to_int() const
+			{
+				return (uint32_t(key) | (uint32_t(modifier) << 16));
+			}
+
+			static KeyMod from_int(uint32_t value)
+			{
+				return KeyMod{ uint16_t(value), uint16_t(value >> 16) };
+			}
+		};
+
+		virtual ~Scintilla();
+
+		ScintillaObject *get() const
+		{
+			return m_sci;
+		}
+
+		bool is_valid() const
+		{
+			return IS_SCINTILLA(m_sci);
+		}
+
+		/**
+		 * Send a normal raw message to Scintilla.
+		 *
+		 * Typically only used by wrapper functions.
+		 */
+		intptr_t send(unsigned int iMessage, uintptr_t wParam=0, intptr_t lParam=0)
+		{
+			return ::scintilla_send_message(m_sci, iMessage, wParam, lParam);
+		}
+
+		/**
+		 * Send a raw message to Scintilla that provides a string result.
+		 *
+		 * Typically only used by wrapper functions.
+		 */
+		intptr_t send(unsigned int iMessage, uintptr_t wParam, std::string &lParam)
+		{
+			intptr_t len = send(iMessage, wParam);
+			lParam.resize(len, '\0');
+			return send(iMessage, wParam, reinterpret_cast<intptr_t>(&lParam[0]));
+		}
+
+/*@@methods@@*/
+
+/*@@properties@@*/
+
+/*@@signal_accessors@@*/
+
+		/**
+		 * Get the name of the given lexer.
+		 *
+		 * @note Some lexers do not have a textual name due to quirks
+		 * in Scintilla even if they have a Lexer constant. In this case
+		 * `nullptr` will be returned.
+		 *
+		 * @param lex The lexer to get the name of.
+		 *
+		 * @return The name of the lexer or `nullptr` if no name exists
+		 * or lexer is invalid.
+		 */
+		static const char *lexer_name(Lexer lex);
+
+		/**
+		 * Get the number of styles provided by the lexer.
+		 *
+		 * @note This is the maximum styles, some lexers leave gaps
+		 * between style IDs.
+		 *
+		 * @param lex The lexer to get the number of styles for.
+		 *
+		 * @see lexer_style_name()
+		 */
+		static size_t lexer_style_count(Lexer lex);
+
+		/**
+		 * Get a C-string array of the lexer's styles.
+		 *
+		 * @note The array may contain `nullptr` elements if the
+		 * lexer leaves gaps between style IDs.
+		 *
+		 * @param lex The lexer to get style names for.
+		 *
+		 * @see lexer_style_name()
+		 */
+		static const char *const *lexer_style_names(Lexer lex);
+
+		/**
+		 * Get the name of the given lexer style.
+		 *
+		 * @note Some lexers leave gaps between style IDs so callers
+		 * should be prepared to handle `nullptr` as a return value
+		 * even if the @a index isn't out of range.
+		 *
+		 * @param lex The lexer to get the style name for.
+		 * @param index The index of the style.
+		 *
+		 * @return A C-string containing the name of the style or
+		 * `nullptr` if there is no such style.
+		 */
+		static const char *lexer_style_name(Lexer lex, size_t index);
+
+		/**
+		 * Retrieves the Scintilla instance associated with a
+		 * ScintillaObject widget.
+		 *
+		 * @param sci The GtkWidget Scintilla to get a Scintilla from.
+		 *
+		 * @return The Scintilla instance associated with the
+		 * ScintillaObject widget or `nullptr` if none is associated.
+		 */
+		static Scintilla *from_widget(ScintillaObject *sci);
+
+	private:
+		ScintillaObject *m_sci;
+		Scintilla(ScintillaObject *sci);
+		friend class Editor;
+
+/*@@signals@@*/
+	};
+
+}

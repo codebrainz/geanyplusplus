@@ -1,0 +1,7 @@
+[cpp-plugin]
+name         = Demo C++
+description  = A simple demo C++ plugin
+version      = 1.0
+author       = A fellow C++ programmer
+help_uri     = http://domain.org/demo-c++/index.html
+configurable = false

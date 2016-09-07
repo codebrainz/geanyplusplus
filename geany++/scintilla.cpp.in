@@ -1,0 +1,91 @@
+#include <geany++/scintilla.hpp>
+
+#ifdef HAVE_CONFIG_H
+#include <geany++/config.h>
+#endif
+
+#include <array>
+
+#define SCINTILLA_DATA_NAME "geany/plugins/geany++/scintilla-wrapper"
+
+namespace Geany
+{
+
+	Scintilla::Scintilla(ScintillaObject *sci)
+		: m_sci(sci)
+	{
+		g_object_add_weak_pointer(G_OBJECT(m_sci),
+			reinterpret_cast<gpointer*>(&m_sci));
+		g_object_set_data(G_OBJECT(m_sci), SCINTILLA_DATA_NAME, this);
+	}
+
+	Scintilla::~Scintilla()
+	{
+		g_object_set_data(G_OBJECT(m_sci), SCINTILLA_DATA_NAME, nullptr);
+		g_object_remove_weak_pointer(G_OBJECT(m_sci),
+			reinterpret_cast<gpointer*>(&m_sci));
+	}
+
+	Scintilla *Scintilla::from_widget(ScintillaObject *sci)
+	{
+		gpointer self = g_object_get_data(G_OBJECT(sci), SCINTILLA_DATA_NAME);
+		if (self)
+			return static_cast<Scintilla*>(self);
+		return nullptr;
+	}
+
+/*@@lexer_style_defs@@*/
+
+	static const struct LexerStyles
+	{
+		size_t count;
+		const char *const *styles;
+	}
+	lexer_styles[]
+	{
+/*@@lexer_style_refs@@*/
+	};
+	static constexpr size_t num_lexer_styles = sizeof(lexer_styles) / sizeof(lexer_styles[0]);
+
+	size_t Scintilla::lexer_style_count(Lexer lex)
+	{
+		auto id = static_cast<size_t>(lex);
+		if (id < num_lexer_styles)
+			return lexer_styles[id].count;
+		return 0;
+	}
+
+	const char *const *Scintilla::lexer_style_names(Lexer lex)
+	{
+		auto id = static_cast<size_t>(lex);
+		if (id < num_lexer_styles)
+			return lexer_styles[id].styles;
+		return nullptr;
+	}
+
+	const char *Scintilla::lexer_style_name(Lexer lex, size_t index)
+	{
+		auto id = static_cast<size_t>(lex);
+		if (id < num_lexer_styles)
+		{
+			if (index < lexer_styles[id].count)
+				return lexer_styles[id].styles[index];
+		}
+		return nullptr;
+	}
+
+	static const char *lexer_names[]
+	{
+/*@@lexer_names@@*/
+	};
+	static constexpr size_t num_lexer_names = sizeof(lexer_names) / sizeof(lexer_names[0]);
+
+	const char *Scintilla::lexer_name(Lexer lex)
+	{
+		auto id = static_cast<size_t>(lex);
+		if (id < num_lexer_names)
+			return lexer_names[id];
+		return nullptr;
+	}
+
+}

@@ -1,0 +1,7 @@
+Scintilla.iface bugs:
+	- Duplicate enums (ex. FontQuality)
+	- Invalid identifiers once stripped (ex. 8859_15, NULL)
+	- ModificationFlags prefixes
+	- FoldFlags prefix missing underscore
+	- FontQuality PHASES prefix stripping leaves weird names
+	- Comments are mixed up, ex for enumerations (fixed)
