@@ -40,10 +40,10 @@ SCIDEPS = \
 	$(top_srcdir)/scripts/sciface.py
 
 scintilla.cpp: $(srcdir)/scintilla.cpp.in $(SCIDEPS)
-	$(AM_V_GEN)$(SCIGEN) -i $(SCIFACE) -o $@ $(srcdir)/scintilla.cpp.in
+	$(AM_V_GEN)$(PYTHON) $(SCIGEN) -i $(SCIFACE) -o $@ $(srcdir)/scintilla.cpp.in
 
 scintilla.hpp: $(srcdir)/scintilla.hpp.in $(SCIDEPS)
-	$(AM_V_GEN)$(SCIGEN) -i $(SCIFACE) -o $@ $(srcdir)/scintilla.hpp.in
+	$(AM_V_GEN)$(PYTHON) $(SCIGEN) -i $(SCIFACE) -o $@ $(srcdir)/scintilla.hpp.in
 
 EXTRA_DIST = \
 	$(SCIDEPS) \
