@@ -8,6 +8,7 @@ libgeany___la_SOURCES = \
 	editor.cpp \
 	filetype.cpp \
 	geany.cpp \
+	geany_p.hpp \
 	scintilla.cpp
 
 plugindir = $(libdir)/geany
@@ -28,7 +29,6 @@ geanycppinclude_HEADERS = \
 	editor.hpp \
 	filetype.hpp \
 	geany.hpp \
-	geany_p.hpp \
 	scintilla.hpp
 
 SCIGEN = $(top_srcdir)/scripts/scigen.py
