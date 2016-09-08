@@ -3,6 +3,7 @@
 
 #include <geany++/common.hpp>
 #include <geany++/document.hpp>
+#include <geany++/project.hpp>
 #include <memory>
 #include <string>
 #include <type_traits>
@@ -27,15 +28,15 @@ namespace Geany
 	class UI
 	{
 	public:
-		Gtk::Menu *editor_menu;
-		Gtk::Notebook *msgwin_notebook;
-		Gtk::Notebook *notebook;
-		Gtk::ProgressBar *progressbar;
-		Gtk::Menu *project_menu;
-		Gtk::Notebook *sidebar_notebook;
-		Gtk::Toolbar *toolbar;
-		Gtk::Menu *tools_menu;
-		Gtk::Window *window;
+		Gtk::Menu *editor_menu;          //!< The editor's right-click context menu.
+		Gtk::Notebook *msgwin_notebook;  //!< The notebook in the message window.
+		Gtk::Notebook *notebook;         //!< The main document notebook.
+		Gtk::ProgressBar *progressbar;   //!< The progress bar that at the right of the statusbar.
+		Gtk::Menu *project_menu;         //!< The Project submenu in the main menu.
+		Gtk::Notebook *sidebar_notebook; //!< The notebook in the sidebar
+		Gtk::Toolbar *toolbar;           //!< The main toolbar
+		Gtk::Menu *tools_menu;           //!< The Tools submenu in the main menu.
+		Gtk::Window *window;             //!< Geany's main top-level window.
 
 	private:
 		UI(GeanyMainWidgets *w);
@@ -48,24 +49,6 @@ namespace Geany
 	 * Provides wrappers of common UI widgets.
 	 */
 	extern UI *ui;
-
-
-	struct ProjectEvent
-	{
-		enum class ID
-		{
-			CLOSE,
-			DIALOG_CLOSE,
-			DIALOG_CONFIRM,
-			DIALOG_OPEN,
-			OPEN,
-			SAVE
-		};
-		ID event;
-		Gtk::Notebook *notebook; // DIALOG_*
-		Glib::KeyFile *keyfile;  // OPEN, SAVE
-	};
-
 
 	/**
 	 * An opaque structure passed to the IPlugin constructor.
@@ -86,7 +69,6 @@ namespace Geany
 	class IPlugin
 	{
 	public:
-		typedef sigc::signal<void, ProjectEvent&> ProjectSignal;
 
 		virtual ~IPlugin()
 		{
@@ -149,14 +131,24 @@ namespace Geany
 		 */
 		const std::string &help_uri() const;
 
+		/**
+		 * Signal emitted when a new or existing document is emitted.
+		 *
+		 * @note This may not get fired if the plugin overrides the
+		 * virtual document_open member function and doesn't chain back
+		 * up to the base class from it.
+		 *
+		 * A reference to the document that was opened is passed as
+		 * the only argument to the callbacks.
+		 */
 		sigc::signal<void, Document&> signal_document_open()
 		{
 			return signal_document_open_;
 		}
 
-		ProjectSignal &signal_project()
+		sigc::signal<void, Project&, Glib::KeyFile> signal_project_open()
 		{
-			return signal_project_;
+			return signal_project_open_;
 		}
 
 	protected:
@@ -214,7 +206,7 @@ namespace Geany
 		/**
 		 * Gets called when a new or existing document is opened.
 		 *
-		 * The default implementation emits the signal_document()
+		 * The default implementation emits the signal_document_open()
 		 * signal. If subclasses override this function, they should
 		 * make sure to chain-up to this base class implementation
 		 * if/when they want the signal emitted.
@@ -230,19 +222,30 @@ namespace Geany
 			signal_document_open_.emit(doc);
 		}
 
-		virtual void project_event(ProjectEvent &event)
+		/**
+		 * Gets called when a new or existing project is opened.
+		 *
+		 * The default implementation emits the signal_project_open()
+		 * signal. If subclasses override this function, they should
+		 * make sure to chain-up to this base class implementation
+		 * if/when they want the signal emitted.
+		 *
+		 * @param proj The project that was opened.
+		 * @param kf The config file for the project.
+		 */
+		virtual void project_open(Project &proj, Glib::KeyFile &kf)
 		{
-			signal_project_.emit(event);
+			signal_project_open_.emit(proj, kf);
 		}
 
 	private:
 		const PluginData &priv;
 		sigc::signal<void, Document&> signal_document_open_;
-		ProjectSignal signal_project_;
+		sigc::signal<void, Project&, Glib::KeyFile> signal_project_open_;
 
 		friend GtkWidget *subplugin_configure(GeanyPlugin*, GtkDialog*, gpointer) noexcept G_GNUC_INTERNAL;
 		friend void emit_document_open(ProxyPlugin *proxy, Document *doc) noexcept G_GNUC_INTERNAL;
-		friend void subplugin_project_event(IPlugin *plugin, ProjectEvent &event) G_GNUC_INTERNAL;
+		friend void on_project_open(GObject*, GKeyFile *kf, gpointer pdata) noexcept G_GNUC_INTERNAL;
 	};
 
 }

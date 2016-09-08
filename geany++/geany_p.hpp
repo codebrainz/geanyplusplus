@@ -239,6 +239,17 @@ namespace Geany
 		DocumentManager documents;
 		FiletypeManager filetypes;
 		PluginManager plugins;
+		std::unique_ptr<Project> project;
+
+		ProxyPlugin() : project(nullptr)
+		{
+		}
+
+		Project *new_project(GeanyProject *gproj)
+		{
+			project.reset(new Project(gproj));
+			return project.get();
+		}
 
 		static ProxyPlugin *from_data(gpointer data)
 		{

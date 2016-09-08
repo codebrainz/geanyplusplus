@@ -41,11 +41,6 @@ namespace Geany
 	// Sub-plugin callbacks
 	//
 
-	void subplugin_project_event(IPlugin *plugin, ProjectEvent &event)
-	{
-		plugin->project_event(event);
-	}
-
 	static gboolean subplugin_init(GeanyPlugin *gplugin, gpointer pdata) noexcept
 	{
 		CXX_BLOCK_BEGIN
@@ -173,7 +168,7 @@ namespace Geany
 		{
 			g_return_if_fail(doc && doc->is_valid());
 			for (auto plugin : proxy->plugins.list_plugins())
-				plugin->signal_document_open_.emit(*doc);
+				plugin->document_open(*doc);
 		}
 		CXX_BLOCK_END
 	}
@@ -271,11 +266,12 @@ namespace Geany
 	static gboolean on_editor_notify(GObject*, GeanyEditor *editor,
 		SCNotification *nt, gpointer pdata) noexcept
 	{
+		g_return_val_if_fail(nt, FALSE);
 		CXX_BLOCK_BEGIN
 		{
 			Scintilla *sci = Scintilla::from_widget(editor->sci);
-			g_return_val_if_fail(sci, FALSE);
-			g_return_val_if_fail(nt, FALSE);
+			if (!sci)
+				return FALSE;
 			switch (nt->nmhdr.code)
 			{
 				case SCN_STYLENEEDED: return sci->signal_style_needed().emit(*nt);
@@ -317,50 +313,67 @@ namespace Geany
 		return FALSE;
 	}
 
-	static void emit_project_signal(ProjectEvent::ID evt, GtkWidget *nb,
-		GKeyFile *kf, gpointer pdata) noexcept
+	void on_project_open(GObject*, GKeyFile *kf, gpointer pdata) noexcept
 	{
 		CXX_BLOCK_BEGIN
 		{
+			GeanyProject *gproj = Geany::data->app->project;
+			g_return_if_fail(gproj);
 			auto proxy = ProxyPlugin::from_data(pdata);
-			Gtk::Notebook *nb = Glib::wrap(GTK_NOTEBOOK(nb));
-			std::unique_ptr<Glib::KeyFile> keyfile(
-				kf ? new Glib::KeyFile(kf) : nullptr);
-			ProjectEvent event { evt, nb, keyfile.get() };
+			auto proj = proxy->new_project(gproj);
+			Glib::KeyFile keyfile(kf);
 			for (auto plugin : proxy->plugins.list_plugins())
-				subplugin_project_event(plugin, event);
+				plugin->project_open(*proj, keyfile);
 		}
 		CXX_BLOCK_END
 	}
 
-	static void on_project_open(GObject*, GKeyFile *kf, gpointer pdata) noexcept
-	{
-		emit_project_signal(ProjectEvent::ID::OPEN, nullptr, kf, pdata);
-	}
-
-	static void on_project_save(GObject*, GKeyFile *kf, gpointer pdata) noexcept
-	{
-		emit_project_signal(ProjectEvent::ID::SAVE, nullptr, kf, pdata);
-	}
-
 	static void on_project_close(GObject*, gpointer pdata) noexcept
 	{
-		emit_project_signal(ProjectEvent::ID::CLOSE, nullptr, nullptr, pdata);
+		CXX_BLOCK_BEGIN
+		{
+			auto proxy = ProxyPlugin::from_data(pdata);
+			g_return_if_fail(!proxy->project);
+			proxy->project->signal_close().emit();
+			proxy->project = nullptr;
+		}
+		CXX_BLOCK_END
 	}
 
-	static void on_project_dialog_open(GObject*, GtkWidget *nb, gpointer pdata) noexcept
+	static void on_project_dialog_open(GObject*, GtkWidget *notebook, gpointer pdata) noexcept
 	{
-		emit_project_signal(ProjectEvent::ID::DIALOG_OPEN, nb, nullptr, pdata);
+		CXX_BLOCK_BEGIN
+		{
+			auto proxy = ProxyPlugin::from_data(pdata);
+			g_return_if_fail(!proxy->project);
+			Gtk::Notebook *nb = Glib::wrap(GTK_NOTEBOOK(notebook));
+			proxy->project->signal_dialog_open().emit(nb);
+		}
+		CXX_BLOCK_END
 	}
 
-	static void on_project_dialog_confirmed(GObject*, GtkWidget *nb, gpointer pdata) noexcept
+	static void on_project_dialog_confirmed(GObject*, GtkWidget *notebook, gpointer pdata) noexcept
 	{
-		emit_project_signal(ProjectEvent::ID::DIALOG_CONFIRM, nb, nullptr, pdata);
+		CXX_BLOCK_BEGIN
+		{
+			auto proxy = ProxyPlugin::from_data(pdata);
+			g_return_if_fail(!proxy->project);
+			Gtk::Notebook *nb = Glib::wrap(GTK_NOTEBOOK(notebook));
+			proxy->project->signal_dialog_confirmed().emit(nb);
+		}
+		CXX_BLOCK_END
 	}
 
-	static void on_project_dialog_close(GObject*, GtkWidget *nb, gpointer pdata) noexcept
+	static void on_project_dialog_close(GObject*, GtkWidget *notebook, gpointer pdata) noexcept
 	{
-		emit_project_signal(ProjectEvent::ID::DIALOG_CLOSE, nb, nullptr, pdata);
+		CXX_BLOCK_BEGIN
+		{
+			auto proxy = ProxyPlugin::from_data(pdata);
+			g_return_if_fail(!proxy->project);
+			Gtk::Notebook *nb = Glib::wrap(GTK_NOTEBOOK(notebook));
+			proxy->project->signal_dialog_close().emit(nb);
+		}
+		CXX_BLOCK_END
 	}
 
 	gboolean proxy_init(GeanyPlugin *plugin, gpointer) noexcept
@@ -374,6 +387,11 @@ namespace Geany
 			geany_plugin_set_data(plugin, proxy, nullptr);
 			Geany::g_proxy = proxy;
 
+			// todo: go through and add initial docs to docman
+
+			if (Geany::data->app->project)
+				proxy->new_project(Geany::data->app->project);
+
 #define PSC(sig_name, cb) \
 	plugin_signal_connect(plugin, NULL, sig_name, TRUE, G_CALLBACK(cb), proxy)
 
@@ -386,12 +404,11 @@ namespace Geany
 			PSC("document-reload", on_document_reload);
 			PSC("document-save", on_document_save);
 			PSC("editor-notify", on_editor_notify);
-			PSC("project-close", on_project_close);
-			PSC("project-dialog-close", on_project_dialog_close);
-			PSC("project-dialog-confirmed", on_project_dialog_confirmed);
-			PSC("project-dialog-open", on_project_dialog_open);
 			PSC("project-open", on_project_open);
-			PSC("project-save", on_project_save);
+			PSC("project-close", on_project_close);
+			PSC("project-dialog-open", on_project_dialog_open);
+			PSC("project-dialog-confirmed", on_project_dialog_confirmed);
+			PSC("project-dialog-close", on_project_dialog_close);
 
 #undef PSC
 
