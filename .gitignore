@@ -13,6 +13,7 @@ Makefile.in
 /aclocal.m4
 /configure
 /config.*
+/geany++.pc
 /libtool
 /scripts/__pycache__/
 /geany++/config.h*
