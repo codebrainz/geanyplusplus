@@ -15,15 +15,11 @@ libgeany___la_SOURCES = \
 	ui.cpp
 
 plugindir = $(libdir)/geany
-plugin_LTLIBRARIES = geany++.la demo++.la
-plugin_DATA = $(srcdir)/demo++.plugin
+plugin_LTLIBRARIES = geany++.la
 
 geany___la_SOURCES = proxy.cpp
 geany___la_LDFLAGS = -module -avoid-version
 geany___la_LIBADD = libgeany++.la
-demo___la_SOURCES = demo.cpp
-demo___la_LDFLAGS = -module -avoid-version
-demo___la_LIBADD = libgeany++.la
 
 geanycppincludedir = $(includedir)/geany++
 geanycppinclude_HEADERS = \

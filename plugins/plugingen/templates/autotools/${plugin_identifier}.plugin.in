@@ -1,0 +1,10 @@
+# This file is part of the ${plugin_name} plugin for Geany.
+# Copyright (c) ${plugin_year} ${plugin_author_name} <${plugin_author_email}>
+# See the COPYING file for license information.
+
+[cpp-plugin]
+name         = ${plugin_name}
+description  = ${plugin_description}
+version      = ${plugin_version}
+author       = ${plugin_author_name} <${plugin_author_email}>
+help_uri     = ${plugin_support_url}

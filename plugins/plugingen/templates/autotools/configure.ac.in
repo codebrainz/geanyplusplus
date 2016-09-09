@@ -1,0 +1,16 @@
+# This file is part of the ${plugin_name} plugin for Geany.
+# Copyright (c) ${plugin_year} ${plugin_author_name} <${plugin_author_email}>
+# See the COPYING file for license information.
+AC_INIT([${plugin_name}], [${plugin_version}], [${plugin_bug_report_url}], [${plugin_identifier}-${plugin_version}])
+AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_AUX_DIR([build-aux])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_SILENT_RULES([yes])
+AM_PROG_AR
+AC_PROG_CXX
+LT_INIT([disable-static])
+AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
+PKG_CHECK_MODULES([GEANYPLUSPLUS], [geany++])
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT

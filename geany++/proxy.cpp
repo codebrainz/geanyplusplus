@@ -10,15 +10,15 @@
 #include <stdexcept>
 #include <cstdlib>
 
-#if GEANY_API_VERSION >= 229
-#define PROX_MATCH GEANY_PROXY_MATCH
-#define PROX_IGNORE GEANY_PROXY_IGNORE
-#define PROX_RELATED GEANY_PROXY_RELATED
-#else
+//#if GEANY_API_VERSION >= 229
+//#define PROX_MATCH GEANY_PROXY_MATCH
+//#define PROX_IGNORE GEANY_PROXY_IGNORE
+//#define PROX_RELATED GEANY_PROXY_RELATED
+//#else
 #define PROX_MATCH PROXY_MATCHED
 #define PROX_IGNORE PROXY_IGNORED
 #define PROX_RELATED (PROXY_MATCHED|PROXY_NOLOAD)
-#endif
+//#endif
 
 
 // use these around C++ code which might throw an exception that would

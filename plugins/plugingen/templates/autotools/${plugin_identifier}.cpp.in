@@ -1,0 +1,30 @@
+/*
+ * This file is part of the ${plugin_name} plugin for Geany.
+ * Copyright (c) ${plugin_year} ${plugin_author_name} <${plugin_author_email}>
+ * See the COPYING file for license information.
+ */
+
+#include <geany++/geany.hpp>
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+struct Plugin final : public Geany::IPlugin
+{
+	Gtk::MenuItem item;
+
+	Plugin(Geany::PluginData &init_data)
+		: Geany::IPlugin(init_data),
+		  item(_("${plugin_name}"))
+	{
+		Geany::ui->tools_menu->append(item);
+		item.show();
+		item.signal_activate().connect([]() {
+			Gtk::MessageDialog("Hello from the ${plugin_name} plugin").run();
+		});
+	}
+
+};
+
+GEANYCPP_DEFINE_PLUGIN(Plugin);

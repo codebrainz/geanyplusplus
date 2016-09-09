@@ -1,0 +1,5 @@
+[cpp-plugin]
+name = C++ Plugin Generator
+description = Generates the boilerplate for a Geany++ plugin.
+version = 1.0
+author = Matthew Brush <matt@geany.org>

@@ -1,0 +1,13 @@
+# This file is part of the ${plugin_name} plugin for Geany.
+# Copyright (c) ${plugin_year} ${plugin_author_name} <${plugin_author_email}>
+# See the COPYING file for license information.
+ACLOCAL_AMFLAGS = -I m4
+AM_CXXFLAGS = $(GEANYPLUSPLUS_CFLAGS)
+AM_LDFLAGS = $(GEANYPLUSPLUS_LIBS)
+
+plugindir = $(libdir)/geany
+plugin_LTLIBRARIES = ${plugin_identifier}.la
+plugin_DATA = $(srcdir)/${plugin_identifier}.plugin
+
+${plugin_identifier}_la_SOURCES = ${plugin_identifier}.cpp
+${plugin_identifier}_la_LDFLAGS = -module -avoid-version

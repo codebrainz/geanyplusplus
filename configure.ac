@@ -19,6 +19,11 @@ AC_CONFIG_FILES([
 	geany++.pc
 	Makefile
 	geany++/Makefile
+	plugins/Makefile
+	plugins/demo++/Makefile
+	plugins/plugingen/Makefile
+	plugins/plugingen/templates/Makefile
+	plugins/plugingen/templates/autotools/Makefile
 	doc/Makefile
 	doc/Doxyfile
 ])

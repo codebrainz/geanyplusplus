@@ -77,6 +77,13 @@ namespace Geany
 			return signal_dialog_close_;
 		}
 
+#if GEANY_API_VERSION >= 229
+		static bool open(const std::string &fn)
+		{
+			return ::project_open_file(fn.c_str());
+		}
+#endif
+
 	private:
 		GeanyProject *m_proj;
 		sigc::signal<void, Glib::KeyFile&> signal_save_;

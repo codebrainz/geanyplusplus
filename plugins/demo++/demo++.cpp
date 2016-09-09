@@ -17,19 +17,6 @@ struct DemoPlugin final : public Geany::IPlugin
 		item.signal_activate().connect([]() {
 			Gtk::MessageDialog("Hello from the Demo C++ plugin").run();
 		});
-		run_later();
-	}
-
-	void run_later()
-	{
-		Glib::signal_timeout().connect([this]() {
-			this->signal_document_open().connect([](Geany::Document &doc) {
-				g_debug("document '%s' opened", doc.filename().c_str());
-			});
-			Geany::Document::new_file("hello++.txt", nullptr,
-				"Hello from the C++ demo plugin");
-			return false;
-		}, 250);
 	}
 
 };
