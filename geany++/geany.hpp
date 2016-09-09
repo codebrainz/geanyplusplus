@@ -3,6 +3,7 @@
 
 #include <geany++/common.hpp>
 #include <geany++/document.hpp>
+#include <geany++/pluginconfig.hpp>
 #include <geany++/project.hpp>
 #include <memory>
 #include <string>
@@ -130,6 +131,13 @@ namespace Geany
 		 * plugin doesn't provide help documentation.
 		 */
 		const std::string &help_uri() const;
+
+		/**
+		 * Get the plugin's configuration file object.
+		 *
+		 * @return The PluginConfig object for this plugin.
+		 */
+		PluginConfig &config();
 
 		/**
 		 * Signal emitted when a new or existing document is emitted.

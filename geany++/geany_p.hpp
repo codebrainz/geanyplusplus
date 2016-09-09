@@ -60,6 +60,7 @@ namespace Geany
 		PluginSpecFile spec;
 		std::unique_ptr<PluginModule> module;
 		std::unique_ptr<IPlugin> plugin;
+		PluginConfig config;
 
 		PluginData(ProxyPlugin &proxy, GeanyPlugin *gplugin,
 			const std::string &spec_filename);

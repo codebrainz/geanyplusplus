@@ -1,4 +1,5 @@
 #include <geany++/geany_p.hpp>
+#include <geany++/utils.hpp>
 
 #ifdef HAVE_CONFIG_H
 #include <geany++/config.h>
@@ -23,22 +24,6 @@ namespace Geany
 	{
 		Glib::init();
 		Gtk::Main::init_gtkmm_internals();
-	}
-
-	static inline std::string basename_without_extension(const std::string &fn)
-	{
-		auto bn = Glib::path_get_basename(fn);
-		auto ext_pos = bn.rfind('.');
-		if (ext_pos != bn.npos)
-			bn.resize(ext_pos);
-		return bn;
-	}
-
-	static inline std::string replace_extension(const std::string &fn, const std::string &ext)
-	{
-		auto dn = Glib::path_get_dirname(fn);
-		auto bn = basename_without_extension(fn) + ext;
-		return Glib::build_filename(dn, bn);
 	}
 
 	template< class T >
@@ -217,7 +202,8 @@ namespace Geany
 		GeanyPlugin *gplugin, const std::string &spec_filename)
 		: proxy(proxy),
 		  gplugin(gplugin),
-		  spec(spec_filename)
+		  spec(spec_filename),
+		  config(spec_filename)
 	{
 	}
 
@@ -291,6 +277,11 @@ namespace Geany
 	const std::string &IPlugin::help_uri() const
 	{
 		return priv.spec.help_uri;
+	}
+
+	PluginConfig &IPlugin::config()
+	{
+		return priv.config;
 	}
 
 } // namespace Geany
