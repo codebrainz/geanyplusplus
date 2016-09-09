@@ -234,7 +234,7 @@ namespace Geany
 	// IPlugin implementation
 	//
 
-	IPlugin::IPlugin(const PluginData &init_data)
+	IPlugin::IPlugin(PluginData &init_data)
 		: priv(init_data)
 	{
 	}

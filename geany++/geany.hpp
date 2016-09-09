@@ -180,7 +180,7 @@ namespace Geany
 		 * @param init_data An opaque reference to internal data used
 		 * to initialize the base class.
 		 */
-		IPlugin(const PluginData &init_data);
+		IPlugin(PluginData &init_data);
 
 		/**
 		 * Gets a Gtk::Widget panel to add to the plugin prefs dialog.
@@ -247,7 +247,7 @@ namespace Geany
 		}
 
 	private:
-		const PluginData &priv;
+		PluginData &priv;
 		sigc::signal<void, Document&> signal_document_open_;
 		sigc::signal<void, Project&, Glib::KeyFile> signal_project_open_;
 
@@ -283,11 +283,11 @@ namespace Geany
  *
  * @see Geany::IPlugin
  */
-#define GEANYCPP_DEFINE_PLUGIN(T)                                      \
-    GEANYCPP_EXPORT                                                    \
-    Geany::IPlugin *geanycpp_create_plugin(const Geany::PluginData &x) \
-    {                                                                  \
-        static_assert(std::is_base_of<Geany::IPlugin, T>::value,       \
-            "the type '" #T "' must derive from 'Geany::IPlugin'");    \
-        return new T(x);                                               \
+#define GEANYCPP_DEFINE_PLUGIN(T)                                   \
+    GEANYCPP_EXPORT                                                 \
+    Geany::IPlugin *geanycpp_create_plugin(Geany::PluginData &x)    \
+    {                                                               \
+        static_assert(std::is_base_of<Geany::IPlugin, T>::value,    \
+            "the type '" #T "' must derive from 'Geany::IPlugin'"); \
+        return new T(x);                                            \
     }

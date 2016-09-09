@@ -8,7 +8,7 @@ struct DemoPlugin final : public Geany::IPlugin
 {
 	Gtk::MenuItem item;
 
-	DemoPlugin(const Geany::PluginData &init_data)
+	DemoPlugin(Geany::PluginData &init_data)
 		: Geany::IPlugin(init_data),
 		  item(_("Demo C++"))
 	{
