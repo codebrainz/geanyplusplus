@@ -9,7 +9,10 @@ libgeany___la_SOURCES = \
 	filetype.cpp \
 	geany.cpp \
 	geany_p.hpp \
-	scintilla.cpp
+	iplugin.cpp \
+	pluginconfig.cpp \
+	scintilla.cpp \
+	ui.cpp
 
 plugindir = $(libdir)/geany
 plugin_LTLIBRARIES = geany++.la demo++.la
@@ -29,7 +32,12 @@ geanycppinclude_HEADERS = \
 	editor.hpp \
 	filetype.hpp \
 	geany.hpp \
-	scintilla.hpp
+	iplugin.hpp \
+	pluginconfig.hpp \
+	project.hpp \
+	scintilla.hpp \
+	ui.hpp \
+	utils.hpp
 
 SCIGEN = $(top_srcdir)/scripts/scigen.py
 SCIFACE = $(top_srcdir)/scripts/Scintilla.iface

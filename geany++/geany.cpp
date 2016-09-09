@@ -26,43 +26,6 @@ namespace Geany
 		Gtk::Main::init_gtkmm_internals();
 	}
 
-	template< class T >
-	static T* wrap(GtkWidget *wid, bool take_copy=true)
-	{
-		return dynamic_cast<T*>(Glib::wrap(wid, take_copy));
-	}
-
-	//
-	// UI implementation
-	//
-
-	UI::UI(GeanyMainWidgets *w)
-		: editor_menu(wrap<Gtk::Menu>(w->editor_menu)),
-		  msgwin_notebook(wrap<Gtk::Notebook>(w->message_window_notebook)),
-		  notebook(wrap<Gtk::Notebook>(w->notebook)),
-		  progressbar(wrap<Gtk::ProgressBar>(w->progressbar)),
-		  project_menu(wrap<Gtk::Menu>(w->project_menu)),
-		  sidebar_notebook(wrap<Gtk::Notebook>(w->sidebar_notebook)),
-		  toolbar(wrap<Gtk::Toolbar>(w->toolbar)),
-		  tools_menu(wrap<Gtk::Menu>(w->tools_menu)),
-		  window(wrap<Gtk::Window>(w->window))
-	{
-	}
-
-	UI::~UI()
-	{
-		/* Causes bad stuff to happen
-		delete editor_menu;
-		delete msgwin_notebook;
-		delete notebook;
-		delete progressbar;
-		delete project_menu;
-		delete sidebar_notebook;
-		delete toolbar;
-		delete tools_menu;
-		delete window;
-		*/
-	}
 
 	//
 	// PluginModule implementation
@@ -227,61 +190,6 @@ namespace Geany
 	PluginData *PluginData::from_data(gpointer pdata)
 	{
 		return static_cast<PluginData*>(pdata);
-	}
-
-
-	//
-	// IPlugin implementation
-	//
-
-	IPlugin::IPlugin(PluginData &init_data)
-		: priv(init_data)
-	{
-	}
-
-	GeanyPlugin &IPlugin::geany_plugin() const
-	{
-		return *(priv.gplugin);
-	}
-
-	const std::string &IPlugin::module_filename() const
-	{
-		return priv.module->filename;
-	}
-
-	const std::string &IPlugin::plugin_filename() const
-	{
-		return priv.spec.filename;
-	}
-
-	const std::string &IPlugin::name() const
-	{
-		return priv.spec.name;
-	}
-
-	const std::string &IPlugin::description() const
-	{
-		return priv.spec.description;
-	}
-
-	const std::string &IPlugin::version() const
-	{
-		return priv.spec.version;
-	}
-
-	const std::string &IPlugin::author() const
-	{
-		return priv.spec.author;
-	}
-
-	const std::string &IPlugin::help_uri() const
-	{
-		return priv.spec.help_uri;
-	}
-
-	PluginConfig &IPlugin::config()
-	{
-		return priv.config;
 	}
 
 } // namespace Geany

@@ -51,12 +51,15 @@ namespace Geany
 
 	bool PluginConfig::save()
 	{
-		return Glib::KeyFile::save_to_file(m_fn);
+		return m_kf.save_to_file(m_fn);
 	}
 
 	void PluginConfig::save_later()
 	{
-		Glib::signal_idle().connect([]() { save(); });
+		Glib::signal_idle().connect([this]() {
+			save();
+			return false;
+		});
 	}
 
 	void PluginConfig::begin_group(const std::string &group)
