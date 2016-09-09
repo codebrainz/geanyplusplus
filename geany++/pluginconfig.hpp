@@ -47,6 +47,7 @@ namespace Geany
 		PluginConfig(const std::string &plugin_filename);
 		PluginConfig(const PluginConfig&);
 		PluginConfig &operator=(const PluginConfig&);
+		~PluginConfig();
 		void update_current_group();
 		friend class PluginData;
 	};

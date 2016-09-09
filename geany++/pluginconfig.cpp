@@ -22,6 +22,16 @@ namespace Geany
 		update_current_group();
 	}
 
+	PluginConfig::~PluginConfig()
+	{
+		try
+		{
+			if (!m_kf.get_groups().empty())
+				save();
+		}
+		catch (...) {}
+	}
+
 	bool PluginConfig::load()
 	{
 		try
