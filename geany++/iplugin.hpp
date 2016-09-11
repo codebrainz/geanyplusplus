@@ -114,6 +114,11 @@ namespace Geany
 			return signal_project_open_;
 		}
 
+		sigc::signal<void> signal_project_close()
+		{
+			return signal_project_close_;
+		}
+
 	protected:
 
 		/**
@@ -201,14 +206,21 @@ namespace Geany
 			signal_project_open_.emit(proj, kf);
 		}
 
+		virtual void project_close()
+		{
+			signal_project_close_.emit();
+		}
+
 	private:
 		PluginData &priv;
 		sigc::signal<void, Document&> signal_document_open_;
 		sigc::signal<void, Project&, Glib::KeyFile> signal_project_open_;
+		sigc::signal<void> signal_project_close_;
 
 		friend GtkWidget *subplugin_configure(GeanyPlugin*, GtkDialog*, gpointer) noexcept G_GNUC_INTERNAL;
 		friend void emit_document_open(ProxyPlugin *proxy, Document *doc) noexcept G_GNUC_INTERNAL;
 		friend void on_project_open(GObject*, GKeyFile *kf, gpointer pdata) noexcept G_GNUC_INTERNAL;
+		friend void on_project_close(GObject*, gpointer pdata) noexcept G_GNUC_INTERNAL;
 	};
 
 }

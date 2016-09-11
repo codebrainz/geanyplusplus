@@ -203,7 +203,7 @@ static void remove_project_file(StringList &list)
 // TODO: move this to plugingen.cpp
 static void finish_processing(const GenProcessorSettings &settings)
 {
-#if GEANY_API_VERSION >= 229
+#ifdef GEANY_API_HAVE_PROJECT_OPEN
 	if (settings.generate_project)
 	{
 		Gtk::MessageDialog dlg(Glib::ustring::compose(
