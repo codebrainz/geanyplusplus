@@ -154,7 +154,9 @@ static bool validate_entry(Gtk::Entry *ent, const Glib::ustring &name)
 			_("The '%1' field is required."), name));
 		ent->grab_focus();
 		ent->select_region(0, -1);
+		return false;
 	}
+	return true;
 }
 
 bool GenDialog::validate()
