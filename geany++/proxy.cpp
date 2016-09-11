@@ -358,7 +358,7 @@ namespace Geany
 		CXX_BLOCK_BEGIN
 		{
 			auto proxy = ProxyPlugin::from_data(pdata);
-			g_return_if_fail(!proxy->project);
+			g_return_if_fail(proxy->project);
 			Gtk::Notebook *nb = Glib::wrap(GTK_NOTEBOOK(notebook));
 			proxy->project->signal_dialog_open().emit(nb);
 		}
@@ -370,7 +370,7 @@ namespace Geany
 		CXX_BLOCK_BEGIN
 		{
 			auto proxy = ProxyPlugin::from_data(pdata);
-			g_return_if_fail(!proxy->project);
+			g_return_if_fail(proxy->project);
 			Gtk::Notebook *nb = Glib::wrap(GTK_NOTEBOOK(notebook));
 			proxy->project->signal_dialog_confirmed().emit(nb);
 		}
@@ -382,7 +382,7 @@ namespace Geany
 		CXX_BLOCK_BEGIN
 		{
 			auto proxy = ProxyPlugin::from_data(pdata);
-			g_return_if_fail(!proxy->project);
+			g_return_if_fail(proxy->project);
 			Gtk::Notebook *nb = Glib::wrap(GTK_NOTEBOOK(notebook));
 			proxy->project->signal_dialog_close().emit(nb);
 		}
