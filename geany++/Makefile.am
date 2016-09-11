@@ -11,6 +11,7 @@ libgeany___la_SOURCES = \
 	geany_p.hpp \
 	iplugin.cpp \
 	pluginconfig.cpp \
+	project.cpp \
 	scintilla.cpp \
 	ui.cpp
 

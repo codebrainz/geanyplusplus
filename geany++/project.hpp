@@ -93,10 +93,7 @@ namespace Geany
 		}
 
 #ifdef GEANY_API_HAVE_PROJECT_OPEN
-		static bool open(const std::string &fn)
-		{
-			return ::project_open_file(fn.c_str());
-		}
+		static Project *open(const std::string &fn);
 #endif
 
 	private:
