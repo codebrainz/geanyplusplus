@@ -13,6 +13,7 @@ libgeany___la_SOURCES = \
 	pluginconfig.cpp \
 	project.cpp \
 	scintilla.cpp \
+	templateprefs.cpp \
 	ui.cpp
 
 plugindir = $(libdir)/geany
@@ -33,6 +34,7 @@ geanycppinclude_HEADERS = \
 	pluginconfig.hpp \
 	project.hpp \
 	scintilla.hpp \
+	templateprefs.hpp \
 	ui.hpp \
 	utils.hpp
 

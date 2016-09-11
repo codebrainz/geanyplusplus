@@ -93,6 +93,10 @@ GenDialog::GenDialog()
 
 	ent_templatedir->set_text(PLUGINGEN_TEMPLATE_DIR);
 
+	ent_author->set_text(Geany::TemplatePrefs::developer());
+	ent_email->set_text(Geany::TemplatePrefs::email());
+	ent_vers->set_text(Geany::TemplatePrefs::initial_version());
+
 	make_clearable_entries(ent_name, ent_ident, ent_desc, ent_vers,
 		ent_author, ent_email, ent_support_uri, ent_bug_uri, ent_basedir, nullptr);
 
