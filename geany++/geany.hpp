@@ -1,5 +1,6 @@
 #pragma once
 
+#include <geany++/build.hpp>
 #include <geany++/common.hpp>
 #include <geany++/document.hpp>
 #include <geany++/editor.hpp>
