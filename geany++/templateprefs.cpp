@@ -1,5 +1,4 @@
 #include <geany++/templateprefs.hpp>
-#include <geany++/geany.hpp>
 
 namespace Geany
 {

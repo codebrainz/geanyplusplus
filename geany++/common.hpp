@@ -20,3 +20,14 @@ extern "C"
 // prevent namespace pollution
 #undef documents
 #undef filetypes
+
+
+namespace Geany
+{
+
+	/**
+	 * Provides access to all kinds of Geany's global data.
+	 */
+	extern GeanyData *data;
+
+}
