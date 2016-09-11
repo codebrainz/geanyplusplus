@@ -82,9 +82,7 @@ static void make_replacements_list(ReplList &list, const GenProcessorSettings &s
 	list.emplace_back("${plugin_template_dir}", settings.template_dir);
 	list.emplace_back("${plugin_year}", current_year_string());
 
-	std::stringstream ss;
-	ss << settings.identifier << ".cpp";
-	auto src_file = Glib::build_filename(settings.base_dir, ss.str());
+	auto src_file = Glib::build_filename(settings.base_dir, settings.identifier + ".cpp");
 	list.emplace_back("${plugin_cpp_file_escaped}", Glib::uri_escape_string(src_file));
 }
 
@@ -216,9 +214,7 @@ static void finish_processing(const GenProcessorSettings &settings)
 		if (dlg.run() == Gtk::RESPONSE_YES)
 		{
 			dlg.hide();
-			std::stringstream ss;
-			ss << settings.identifier << ".geany";
-			auto fn = Glib::build_filename(settings.base_dir, ss.str());
+			auto fn = Glib::build_filename(settings.base_dir, settings.identifier + ".geany");
 			Geany::Project::open(fn);
 		}
 	}
@@ -233,9 +229,7 @@ static void finish_processing(const GenProcessorSettings &settings)
 		if (dlg.run() == Gtk::RESPONSE_YES)
 		{
 			dlg.hide();
-			std::stringstream ss;
-			ss << settings.identifier << ".cpp";
-			auto fn = Glib::build_filename(settings.base_dir, ss.str());
+			auto fn = Glib::build_filename(settings.base_dir, settings.identifier + ".cpp");
 			Geany::Document::open(fn);
 		}
 	}
