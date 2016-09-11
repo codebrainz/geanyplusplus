@@ -208,8 +208,8 @@ void GenDialog::update_settings(GenProcessorSettings &settings)
 	settings.author_email = ent_email->get_text();
 	settings.support_url = ent_support_uri->get_text();
 	settings.bug_report_url = ent_bug_uri->get_text();
-	settings.base_dir = Glib::filename_to_utf8(ent_basedir->get_text());
-	settings.template_dir = Glib::filename_to_utf8(ent_templatedir->get_text());
+	settings.base_dir = Glib::filename_from_utf8(ent_basedir->get_text());
+	settings.template_dir = Glib::filename_from_utf8(ent_templatedir->get_text());
 	settings.init_git_repo = chk_init_repo->get_active();
 	settings.initial_git_commit = chk_init_commit->get_active();
 	settings.set_git_author = chk_use_author->get_active();
