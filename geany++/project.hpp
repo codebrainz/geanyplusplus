@@ -6,10 +6,6 @@
 #define GEANY_API_HAVE_PROJECT_OPEN 1
 #endif
 
-#if GEANY_API_VERSION >= 229 && 1
-#define GEANY_API_HAVE_PROJECT_BEFORE_CLOSE 1
-#endif
-
 namespace Geany
 {
 
@@ -70,13 +66,6 @@ namespace Geany
 			return signal_close_;
 		}
 
-#ifdef GEANY_API_HAVE_PROJECT_BEFORE_CLOSE
-		sigc::signal<void> signal_before_close()
-		{
-			return signal_before_close_;
-		}
-#endif
-
 		sigc::signal<void, Gtk::Notebook*> signal_dialog_open()
 		{
 			return signal_dialog_open_;
@@ -100,9 +89,6 @@ namespace Geany
 		GeanyProject *m_proj;
 		sigc::signal<void, Glib::KeyFile&> signal_save_;
 		sigc::signal<void> signal_close_;
-#ifdef GEANY_API_HAVE_PROJECT_BEFORE_CLOSE
-		sigc::signal<void> signal_before_close_;
-#endif
 		sigc::signal<void, Gtk::Notebook*> signal_dialog_open_;
 		sigc::signal<void, Gtk::Notebook*> signal_dialog_confirmed_;
 		sigc::signal<void, Gtk::Notebook*> signal_dialog_close_;

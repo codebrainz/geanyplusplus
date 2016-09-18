@@ -333,25 +333,14 @@ namespace Geany
 		CXX_BLOCK_BEGIN
 		{
 			auto proxy = ProxyPlugin::from_data(pdata);
+			if (proxy->project)
+				proxy->project->signal_close().emit();
 			for (auto plugin : proxy->plugins.list_plugins())
 				plugin->project_close();
-		}
-		CXX_BLOCK_END
-	}
-
-#ifdef GEANY_API_HAVE_PROJECT_BEFORE_CLOSE
-	static void on_project_before_close(GObject*, gpointer pdata) noexcept
-	{
-		CXX_BLOCK_BEGIN
-		{
-			auto proxy = ProxyPlugin::from_data(pdata);
-			g_return_if_fail(proxy->project);
-			proxy->project->signal_close().emit();
 			proxy->project = nullptr;
 		}
 		CXX_BLOCK_END
 	}
-#endif
 
 	static void on_project_dialog_open(GObject*, GtkWidget *notebook, gpointer pdata) noexcept
 	{
@@ -419,9 +408,6 @@ namespace Geany
 			PSC("editor-notify", on_editor_notify);
 			PSC("project-open", on_project_open);
 			PSC("project-close", on_project_close);
-#ifdef GEANY_API_HAVE_PROJECT_BEFORE_CLOSE
-			PSC("project-before-close", on_project_before_close);
-#endif
 			PSC("project-dialog-open", on_project_dialog_open);
 			PSC("project-dialog-confirmed", on_project_dialog_confirmed);
 			PSC("project-dialog-close", on_project_dialog_close);
