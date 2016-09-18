@@ -2,7 +2,7 @@
 
 #include <geany++/common.hpp>
 
-#if GEANY_API_VERSION >= 230 && 1
+#if 0
 #define GEANY_API_HAVE_SYMMETRIC_BUILD_FUNCS 1
 #endif
 

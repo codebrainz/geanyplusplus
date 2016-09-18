@@ -414,13 +414,17 @@ namespace Geany
 
 #undef PSC
 
-			static const char *extensions[] = { "plugin", "so", NULL };
+#if GEANY_API_VERSION >= 230
+			static const char *patterns[] = { "*.plugin", "*.so", NULL };
+#else
+			static const char *patterns[] = { "plugin", "so", NULL };
+#endif
 
 			plugin->proxy_funcs->probe = proxy_probe;
 			plugin->proxy_funcs->load = proxy_load;
 			plugin->proxy_funcs->unload = proxy_unload;
 
-			return geany_plugin_register_proxy(plugin, extensions);
+			return geany_plugin_register_proxy(plugin, patterns);
 		}
 		CXX_BLOCK_END
 		return FALSE;
